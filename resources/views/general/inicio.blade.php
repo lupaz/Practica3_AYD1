@@ -191,7 +191,7 @@
     <div class="container marketing">
       <footer>
         <p class="pull-right"><a href="#">Contactanos</a></p>
-        <p>&copy; ACE2-2S-17 Inc. &middot; <a href="#">Privacidad</a> &middot; <a href="#">Terminos</a></p>
+        <p>&copy; AYD1-1S-18 Inc. &middot; <a href="#">Privacidad</a> &middot; <a href="#">Terminos</a></p>
       </footer>
     </div><!-- /.container -->  
 
