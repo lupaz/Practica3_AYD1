@@ -221,6 +221,28 @@ class clientesController extends Controller
     }
 
 
+    public function saldo(){
+        $saldo=DB::table('cuenta')->where('num_cuenta','=',\Session::get('cuenta'))->value('saldo');
+        //$user = DB::select('SELECT * FROM prediccion');
+        //dd($saldo);
+        return view('usuario.saldo',compact('saldo'));
+    }
+
+
+    public function historial()
+    {
+        $trans=DB::table('historial')->where('cod_user','=',\Session::get('cod_user'))->paginate(4);
+        //$user = DB::select('SELECT * FROM prediccion');
+        //dd($trans);
+        return view('usuario.historial',compact('trans'));
+    }
+
+    public function salir(){
+        \Session::flush();
+        return redirect('/');
+    }
+
+
 
 
 }
