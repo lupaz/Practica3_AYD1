@@ -133,4 +133,48 @@ class clientesController extends Controller
         return redirect()->back();         
     }
 
+
+    public function debitar(Request $request){
+        //dd($request->all());
+        
+        if($request->cuenta <0 || $request->monto <0){
+            flash('ERROR: Numero de cuenta o Monto invalido, intente de nuevo.')->error()->important();
+            return redirect()->back()->withInput();
+        }
+
+        $cuenta = DB::table('cuenta')->where('num_cuenta','=',$request->cuenta)->get();
+
+        if(empty($cuenta)){
+            flash('ERROR: El numero de cuenta no exixte, intente de nuevo.')->error()->important();
+            return redirect()->back()->withInput();
+        }
+
+        if($request->monto > $cuenta[0]->saldo){
+            flash('ERROR: El  monto a debitar es mayor al saldo de la cuenta, intente de nuevo.')->error()->important();
+            return redirect()->back()->withInput();
+        }
+
+        
+        $hora_fecha = Carbon::now();
+        $nuevo_saldo=$cuenta[0]->saldo - $request->monto;
+        $saldo_historial = $nuevo_saldo;
+        if($request->cuenta!= \Session::get('cuenta')){
+            $saldo_historial = DB::table('cuenta')->where('num_cuenta','=',$request->cuenta)->value('saldo');
+        }
+
+        DB::insert('INSERT INTO historial (tipo,monto,cuenta_destino,cod_user,descrip,fecha_hora,saldo_actual) values (?,?,?,?,?,?,?)', ['Debito',$request->monto,$request->cuenta,\Session::get('cod_user'),$request->desc,$hora_fecha,$saldo_historial]);
+
+        
+        //actualizamos el nuevo saldo de la cuenta
+        DB::table('cuenta')
+            ->where('num_cuenta',$request->cuenta)
+            ->update(['saldo' => $nuevo_saldo]);
+
+        flash('DEBITO EXITOSO: Se ha debitado correctamente el monto indicado')->success()->important();
+        return redirect()->back();
+        
+    }
+
+
+
 }
